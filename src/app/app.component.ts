@@ -7,4 +7,9 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'cyrrency-converter';
+  clickCounter = 0;
+
+  incrementCounter (){
+    this.clickCounter ++
+  }
 }

@@ -1,0 +1,19 @@
+ <div class="container" *ngIf="rates" (mouseover)="loadStatic()" (mouseover)="showRate()">
+    <h1>Currency Converter</h1>
+    <h3>USD: {{usd ? usd : "00.00"}}</h3>
+    <h3>EUR: {{eur ? eur : "00.00"}}</h3>
+   <input  type="number" placeholder={{from}} [(ngModel)]="first" (input)="converter(true)"> 
+   <label>From</label>
+   <select [(ngModel)] = "from" (change)="loadRates(true)" (change)="loadRates(false)">
+       <option *ngFor="let c of getAll()" [value]="c">{{c}}</option>
+   </select>
+   <input  type="number" placeholder={{to}}  [(ngModel)]="second" (input)="converter(false)" >
+   <label>To</label>
+   <select [(ngModel)] = "to" (change)="loadRates(false)" (change)="loadRates(true)" >
+       <option *ngFor="let c of getAll()" [value]="c">{{c}}</option>
+   </select>
+   <br> 
+</div> 
+
+
+
