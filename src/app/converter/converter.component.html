@@ -1,8 +1,8 @@
-  <div class="container" *ngIf="rates" (mouseover)="loadStatic()" (mouseover)="showRate()">
+  <div class="container" *ngIf="rates"   >
     <div class="static-currency">
-        <h4>{{usd ? "USD: " + usd : null}}</h4>
+        <h4>USD: {{1 * ratesUSD["UAH"]| number : '2.1-2'}} </h4>
         <h1>Currency Converter</h1>
-        <h4>{{eur ? "EUR: " + eur : null}}</h4>
+        <h4>EUR: {{1 * ratesToEUR["UAH"]| number : '2.1-2'}}</h4>
     </div> 
     <br>
    <div class="main">
@@ -11,8 +11,8 @@
             <select [formControl] = "fromSelectFormControl" (change)="loadRates(true)" (change)="loadRates(false)" (input)="changeFromToDirection(false)" >
                 <option   *ngFor="let c of currencyList" [ngValue]="c">{{c}}</option>
             </select>
-            <input (input)="changeFromToDirection(true)"  type="number" placeholder={{from}}   [formControl]= "fromInputControl" > 
-            <input (input)="changeFromToDirection(false)"  type="number" placeholder={{to}}    [formControl]= "toInputControl">
+            <input (input)="changeFromToDirection(true)"  type="number" placeholder={{from}}  [formControl]= "fromInputControl" > 
+            <input (input)="changeFromToDirection(false)"  type="number" placeholder={{to}}   [formControl]= "toInputControl">
             <label>To:</label>
             <select [formControl] = "toSelectFormControl" (change)="loadRates(false)" (change)="loadRates(true)" >
                 <option *ngFor="let c of currencyList" [ngValue]="c">{{c}}</option>

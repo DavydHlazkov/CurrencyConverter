@@ -27,17 +27,6 @@ export class ConverterComponent implements OnInit{
   toSelectFormControl:FormControl
   fromToChange:boolean = true
 
-
-  loadStatic(){
-    this.service.getRates(this.usdRate).subscribe(res => this.ratesUSD = res.rates)
-    this.service.getRates(this.eurRate).subscribe(res => this.ratesToEUR = res.rates)
-  }
-
-  showRate(){
-  this.usd = parseFloat((1 * this.ratesUSD["UAH"]).toFixed(2))
-  this.eur = parseFloat((1 * this.ratesToEUR["UAH"]).toFixed(2))
-  }
-
   loadRates(first:boolean){
     this.service.getRates(this.to).subscribe(res => this.ratesTo = res.rates)
     this.service.getRates(this.from).subscribe(res => this.rates = res.rates)
@@ -49,11 +38,12 @@ export class ConverterComponent implements OnInit{
   ngOnInit(): void {
     this.loadRates(true);
     this.loadRates(false)
-    this.loadStatic()
     this.fromInputControl = new FormControl()
     this.toInputControl =  new FormControl()
     this.fromSelectFormControl = new FormControl("USD")
     this.toSelectFormControl = new FormControl("UAH")
+    this.service.getRates(this.usdRate).subscribe(res => this.ratesUSD = res.rates)
+    this.service.getRates(this.eurRate).subscribe(res => this.ratesToEUR = res.rates)
 
 
     this.fromSelectFormControl.valueChanges.subscribe((value) => {
