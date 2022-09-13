@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { ExchangeRatesService } from '../services/exchange-rates.service';
 
 @Component({
@@ -7,7 +8,7 @@ import { ExchangeRatesService } from '../services/exchange-rates.service';
   styleUrls: ['./converter.component.css']
 })
 export class ConverterComponent implements OnInit{
-  currencyList : ["UAH", "USD", "EUR"]
+  currencyList = ["UAH", "USD", "EUR", "PLN", "CHF", "GBP", "CAD", "INR", "CNY", "JPY", "AZN" ]
   second:number 
   first:number 
   from = "USD"
@@ -20,61 +21,26 @@ export class ConverterComponent implements OnInit{
   ratesTo:{[key : string]: number} = {}
   ratesUSD: {[key : string]: number} = {}
   ratesToEUR: {[key : string]: number} = {}
-  
-  converter(first: boolean){
-    if(first === true){
-      this.second = parseFloat((this.first * this.rates[this.to]).toFixed(2))
+  fromInputControl : FormControl
+  toInputControl: FormControl
+  fromSelectFormControl: FormControl
+  toSelectFormControl:FormControl
+  fromToChange:boolean = true
 
-    }else{
-      this.first = parseFloat((this.second * this.ratesTo[this.from]).toFixed(2))
-    }
-  }
 
   loadStatic(){
     this.service.getRates(this.usdRate).subscribe(res => this.ratesUSD = res.rates)
     this.service.getRates(this.eurRate).subscribe(res => this.ratesToEUR = res.rates)
-}
-
-showRate(){
-  this.usd = parseFloat((1 * this.ratesUSD["UAH"]).toFixed(2))
-  this.eur = parseFloat((1 * this.ratesToEUR["UAH"]).toFixed(2))
-}
-
-  loadRates(first:boolean){
-    this.service.getRates(this.from).subscribe(res => this.rates = res.rates)
-    this.service.getRates(this.to).subscribe(res => this.ratesTo = res.rates)
-    this.converter(first)
   }
 
-getAll():string[]{
-  let resultArr :string[] =[]
-  let startedArr :string[] =  Object.keys(this.rates)
-  for(let i =0; i<startedArr.length; i++){
-    if(startedArr[i] == "UAH"){
-        resultArr.push(startedArr[i])
-      }else if (startedArr[i] == "USD"){
-        resultArr.push(startedArr[i])
-      }else if (startedArr[i] == "EUR"){
-        resultArr.push(startedArr[i])
-      }else if (startedArr[i] == "PLN"){
-        resultArr.push(startedArr[i])
-      }else if (startedArr[i] == "CHF"){
-        resultArr.push(startedArr[i])
-      }else if (startedArr[i] == "GBP"){
-        resultArr.push(startedArr[i])
-      }else if (startedArr[i] == "CAD"){
-        resultArr.push(startedArr[i])
-      }else if (startedArr[i] == "INR"){
-        resultArr.push(startedArr[i])
-      }else if (startedArr[i] == "CNY"){
-        resultArr.push(startedArr[i])
-      }else if (startedArr[i] == "JPY"){
-        resultArr.push(startedArr[i])
-      }else if (startedArr[i] == "AZN"){
-        resultArr.push(startedArr[i])
-      }
-    }
-    return resultArr
+  showRate(){
+  this.usd = parseFloat((1 * this.ratesUSD["UAH"]).toFixed(2))
+  this.eur = parseFloat((1 * this.ratesToEUR["UAH"]).toFixed(2))
+  }
+
+  loadRates(first:boolean){
+    this.service.getRates(this.to).subscribe(res => this.ratesTo = res.rates)
+    this.service.getRates(this.from).subscribe(res => this.rates = res.rates)
   }
 
   constructor(private  service:ExchangeRatesService) { 
@@ -84,6 +50,37 @@ getAll():string[]{
     this.loadRates(true);
     this.loadRates(false)
     this.loadStatic()
-  }
+    this.fromInputControl = new FormControl()
+    this.toInputControl =  new FormControl()
+    this.fromSelectFormControl = new FormControl("USD")
+    this.toSelectFormControl = new FormControl("UAH")
+
+
+    this.fromSelectFormControl.valueChanges.subscribe((value) => {
+    this.from = value
+    this.fromInputControl.setValue(parseFloat((this.fromInputControl.value * this.rates[this.from]).toFixed(2)))
+    } )
+
+    this.toSelectFormControl.valueChanges.subscribe((value) => {
+    this.to = value
+    this.toInputControl.setValue(parseFloat((this.fromInputControl.value * this.rates[this.to]).toFixed(2)))
+    } )
+
+    this.fromInputControl.valueChanges.subscribe((value) => {
+    if(this.fromToChange){
+      this.toInputControl.setValue(parseFloat((value * this.rates[this.to]).toFixed(2)))
+    }
+    })
+
+    this.toInputControl.valueChanges.subscribe((value) => {
+    if(this.fromToChange == false){
+      this.fromInputControl.setValue(parseFloat((value / this.rates[this.to]).toFixed(2)))
+    }
+    })
+    }
+
+    changeFromToDirection(direction:boolean){
+    this.fromToChange = direction;
+    }
 
 }
